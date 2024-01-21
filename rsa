@@ -1,0 +1,55 @@
+#!/usr/bin/python3
+
+import sys
+import time
+from sympy import nextprime, isprime
+
+def rsa_factorize(num):
+    '''Takes an RSA number as input and finds the prime factors p and q.
+    Args:
+        num: input RSA number.
+    '''
+    p = nextprime(2)
+    while not isprime(p):
+        p = nextprime(p)
+    
+    q = num // p
+
+    print(f"{num}={p}*{q}")
+
+if __name__ == "__main__":
+    '''Reads the input file.
+    '''
+    if len(sys.argv) != 2:
+        print("Usage: rsa <file>")
+        sys.exit(1)
+
+    input_file = sys.argv[1]
+
+    try:
+        with open(input_file, 'r') as f:
+            lines = f.readlines()
+    except FileNotFoundError:
+        print("File not found")
+        sys.exit(1)
+
+    start_time = time.time()
+
+    '''Loops over each line (which should contain one RSA number per line),
+        and calls rsa_factorize on each number.
+    '''
+    for line in lines:
+        try:
+            num = int(line.strip())
+        except ValueError:
+            print(f"Invalid input on line: {line.strip()}")
+            continue
+
+        rsa_factorize(num)
+
+    '''If the elapsed time exceeds 5 seconds,
+        the program exits with an error message.
+    '''
+    if time.time() - start_time > 5:
+        print("Time limit exceeded")
+        sys.exit(1)
